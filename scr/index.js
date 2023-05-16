@@ -11,20 +11,28 @@ let users = [];
 app.post("/user", (request,response)=>{
     const user = request.body
     const userexist = users.find(user =>user.email === request.body.email)
+    const  saltRounds = 10;
+    bcrypt.hash(user.password,saltRounds,(err,hash)=>{
+        if(hash){
+            users.push({
+        
+                id: Math.floor(Math.random()*67676),
+                name: user.name,
+                email: user.email,
+                password:hash,
+                note:[]
+        })
+        }else {
+            return response.status(400).send("Ocorreu um erro"+ err)
+        }
+    })
 
     if(userexist){
         return response.status(401).send("Email ja existe em outro usuario")
     }else{
-        const bcryptPassword = bcrypt.hash(password,10)
-    users.push({
         
-            id: Math.floor(Math.random()*67676),
-            name: user.name,
-            email: user.email,
-            bcryptPassword:hash,
-            note:[]
-    })
-    response.status(200).send("Usuario criado com sucesso!");
+    
+    response.status(204).send("Usuario criado com sucesso!");
     console.log(user)
     }
 })
@@ -58,7 +66,7 @@ app.put("/user/:id",(request,response)=>{
     const indexuser = users.findIndex(cuser=> user.id === id)
     users[indexuser]= {
         
-        note:[ {
+        note:[{
                 titulo: user.note.titulo,
                 descricao: user.note.descricao
             }]
