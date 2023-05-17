@@ -75,8 +75,22 @@ app.post("/userNote/:id",(request,response)=>{
         descricao: user.descricao
     }
     userid.note.push(note) 
-        console.log(user[userid])
-        return response.status(200).json(userid)
+        console.log(users)
+        return response.status(200).json(userid.note)
+    
+ })
+ app.put("/userNote/:id/:noteid",(request,response)=>{
+    const user = request.body
+    const id =Number(request.params.id)
+    const noteid = Number(request.params.noteid)
+    const userid= users.find(user=> user.id === id)
+    const noteindex = userid.note.find(note=>note.id===noteid)
+    userid.note= {  
+        titulo: user.titulo,
+        descricao: user.descricao
+    }
+        console.log(users)
+        return response.status(200).json(userid.note)
     
  })
 
