@@ -35,21 +35,23 @@ app.post("/user", (request,response)=>{
     console.log(user)
     }
 })
-app.post("/userLogin", (request,response)=>{
-    
-    const username = users.find(user =>user.name === request.body.name)
-    const userpassword = users.find(user =>user.password === request.body.password)
+app.post("/userLogin/:id", (request,response)=>{
+    const userid = request.params.id
+    const useremail =request.body.email
+    const userpassword = request.body.password
+    const user = users.find(user=> user.id===userid)
 
-    if(!username.name){
-        return response.status(401).json("Nome de usuario nao encontrado")
+    if(!useremail.email){
+        return response.status(401).json(" usuario nao encontrado")
     }
-    if(!userpassword.password){
-        return response.status(401).json("Senha esta incorreta")
-    }
-    else{
-    response.status(200).json("Usuario Logado com sucesso!");
-    
-    }
+    bcrypt.compare(userpassword,user.password,function(err,resul){
+        if(resul){
+            return response.status(401).json("Senha esta incorreta")
+        }
+        else{
+            return response.status(200).json("Usuario Logado com sucesso!");
+        }
+    })
 })
 app.get("/user",(request, response)=>{
     
@@ -62,25 +64,28 @@ app.get("/userNote/:id",(request, response)=>{
     const user = users.find(user=> user.id===id);
     return response.json(user);
 })
-app.put("/userNote/:id/",(request,response)=>{
+app.post("/userNote/:id",(request,response)=>{
     const user = request.body
     const id =Number(request.params.id)
-    const indexuser = users.findIndex(user=> user.id === id)
-    users[indexuser]= 
+    const userid= users.find(user=> user.id === id)
+    const note = {
         
-        users.note.push({
-                noteid: Math.floor(Math.random()*67),
-                titulo: user.note.titulo,
-                descricao: user.note.descricao
-            })
-        console.log(user[indexuser])
-        return response.status(200).json(user[indexuser])
+        noteid: Math.floor(Math.random()*6767),  
+        titulo: user.titulo,
+        descricao: user.descricao
+    }
+    userid.note.push(note) 
+        console.log(user[userid])
+        return response.status(200).json(userid)
+    
  })
 
-app.delete("/userDelete/:id",(request,response)=>{
-    const id =Number(request.params.id)
+app.delete("/userDelete/:id/:noteid",(request,response)=>{
+    const id =Number(request.params.id.noteid)
     const indexuser = users.findIndex(user=> user.id === id)
-    note.splice(indexuser,1)
+    const noteid = note.findIndex(note=>note.id === noteid)
+    if(indexuser){
+        note.splice(noteid,1)}
     response.status(200).json()
 })
 
