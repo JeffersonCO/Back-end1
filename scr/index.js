@@ -62,7 +62,7 @@ app.get("/user",(request, response)=>{
 app.get("/userNote/:id",(request, response)=>{
     const id = Number(request.params.id);
     const user = users.find(user=> user.id===id);
-    return response.json(user);
+    return response.json(user,user.note);
 })
 app.post("/userNote/:id",(request,response)=>{
     const user = request.body
@@ -82,24 +82,24 @@ app.post("/userNote/:id",(request,response)=>{
  app.put("/userNote/:id/:noteid",(request,response)=>{
     const user = request.body
     const id =Number(request.params.id)
-    const noteid = Number(request.params.noteid)
+    const noteid = Number(request.params.id.noteid)
     const userid= users.find(user=> user.id === id)
-    const noteindex = userid.note.find(note=>note.id===noteid)
-    userid.note= {  
-        titulo: user.titulo,
-        descricao: user.descricao
+    const noteindex = userid.note.findIndex(note=>note.id===noteid)
+    userid.note[noteindex]= {  
+        titulo: userid.titulo,
+        descricao: userid.descricao
     }
-        console.log(users)
+        console.log(noteindex)
         return response.status(200).json(userid.note)
     
  })
 
 app.delete("/userDelete/:id/:noteid",(request,response)=>{
     const id =Number(request.params.id.noteid)
-    const indexuser = users.findIndex(user=> user.id === id)
-    const noteid = note.findIndex(note=>note.id === noteid)
-    if(indexuser){
-        note.splice(noteid,1)}
+    const userid = users.find(user=> user.id === id)
+    const noteid = userid.note.findIndex(note=>note.id === noteid)
+    if(userid){
+        userid.note.splice(noteid,1)}
     response.status(200).json()
 })
 
