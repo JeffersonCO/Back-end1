@@ -3,7 +3,7 @@ Atividade Final do modulo Back-End 1 do Bootcamp GrowDev
 Parte 1 Criação de Usuario
 
 <p>Conforme consta na imagem, segue na aba de rota o endereço para criação do usuario e tambem o corpo de requisição necessario para criação do mesmo!</p>
-<a href="(https://github.com/JeffersonCO/Back-end1/blob/master/assets/Cria-recado.png)"></a><br>
+<picture><img src = "https://github.com/JeffersonCO/Back-end1/blob/master/assets/Cria-recado.png" width = 50px></picture>
 
 <p>Apos a criação de usuario e feito o teste de Login onde e passado o corpo de requisição e a rota disponivel na imagem a seguir</p>
 <a href="/assets/Fazer-login.png"></a><br>
