@@ -95,12 +95,14 @@ app.post("/userNote/:id",(request,response)=>{
  })
 
 app.delete("/userDelete/:id/:noteid",(request,response)=>{
-    const id =Number(request.params.id.noteid)
+    const id =Number(request.params.id)
+    const noteid = Number(request.params.id.noteid)
     const userid = users.find(user=> user.id === id)
-    const noteid = userid.note.findIndex(note=>note.id === noteid)
+    const noteindex = userid.note.findIndex(note=>note.id === noteid)
     if(userid){
-        userid.note.splice(noteid,1)}
-    response.status(200).json()
+        userid.note.splice(noteindex,1)
+    }
+    response.status(200).json(userid,userid.note)
 })
 
 app.get('/', (request, response) => {
