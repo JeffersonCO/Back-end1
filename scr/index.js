@@ -10,10 +10,10 @@ let users = [];
 
 app.post("/user", (request,response)=>{
     const user = request.body
-    const userexist = users.find(user =>user.email === request.body.email)
+    const userExist = users.find(user =>user.email === request.body.email)
     const  saltRounds = 10;
 
-    if(userexist){
+    if(userExist){
         return response.status(401).json("Email ja existe em outro usuario")
     }else{
         bcrypt.hash(user.password,saltRounds,function(err,hash){
@@ -25,33 +25,36 @@ app.post("/user", (request,response)=>{
                     email: user.email,
                     password:hash,
                     note:[]
-            })
+                })
+                response.status(204).json("Usuario criado com sucesso!")
             }else {
                 return response.status(400).json("Ocorreu um erro"+ err)
             }
+            ;
         })
     
-    response.status(204).json("Usuario criado com sucesso!");
-    console.log(user)
+        
+    
     }
 })
-app.post("/userLogin/:id", (request,response)=>{
-    const userid = request.params.id
-    const useremail =request.body.email
-    const userpassword = request.body.password
-    const user = users.find(user=> user.id===userid)
+app.post("/userLogin", (request,response)=>{
+    
+    const userEmail =request.body.email
+    const userPassword = request.body.password
+    const user = users.find(user=> user.email===userEmail)
 
-    if(!useremail.email){
+    if(!user){
         return response.status(401).json(" usuario nao encontrado")
-    }
-    bcrypt.compare(userpassword,user.password,function(err,resul){
-        if(resul){
-            return response.status(401).json("Senha esta incorreta")
+    }else{
+            bcrypt.compare(userPassword,user.password,function(err,resul){
+                    if(resul){
+                        return response.status(401).json("Usuario Logado com sucesso!")
+                    }
+                    else{
+                    return response.status(200).json("Senha esta incorreta!");
+                    }
+                }) 
         }
-        else{
-            return response.status(200).json("Usuario Logado com sucesso!");
-        }
-    })
 })
 app.get("/user",(request, response)=>{
     
@@ -62,47 +65,51 @@ app.get("/user",(request, response)=>{
 app.get("/userNote/:id",(request, response)=>{
     const id = Number(request.params.id);
     const user = users.find(user=> user.id===id);
-    return response.json(user,user.note);
+
+    return response.status(200).json(user.note);
 })
 app.post("/userNote/:id",(request,response)=>{
     const user = request.body
     const id =Number(request.params.id)
-    const userid= users.find(user=> user.id === id)
+    const userId= users.find(user=> user.id === id)
     const note = {
         
-        noteid: Math.floor(Math.random()*6767),  
+        noteId: Math.floor(Math.random()*6767),  
         titulo: user.titulo,
         descricao: user.descricao
     }
-    userid.note.push(note) 
-        console.log(users)
-        return response.status(200).json(userid.note)
+    userId.note.push(note) 
+        console.log(userId)
+        return response.status(200).json("Recado criado com sucesso")
     
  })
- app.put("/userNote/:id/:noteid",(request,response)=>{
+ app.put("/userNote/:id/:noteId",(request,response)=>{
     const user = request.body
     const id =Number(request.params.id)
-    const noteid = Number(request.params.id.noteid)
-    const userid= users.find(user=> user.id === id)
-    const noteindex = userid.note.findIndex(note=>note.id===noteid)
-    userid.note[noteindex]= {  
-        titulo: userid.titulo,
-        descricao: userid.descricao
+    const noteId = Number(request.params.noteId)
+    const userId= users.find(user=> user.id === id)
+    const noteIndex = userId.note.findIndex(recado=>recado.noteId===noteId)
+    
+    userId.note[noteIndex]= { 
+        noteId:noteId,
+        titulo: user.titulo,
+        descricao: user.descricao
     }
-        console.log(noteindex)
-        return response.status(200).json(userid.note)
+        console.log(userId)
+        return response.status(200).json("Recado editado com sucesso")
     
  })
 
-app.delete("/userDelete/:id/:noteid",(request,response)=>{
+app.delete("/userDelete/:id/:noteId",(request,response)=>{
     const id =Number(request.params.id)
-    const noteid = Number(request.params.id.noteid)
-    const userid = users.find(user=> user.id === id)
-    const noteindex = userid.note.findIndex(note=>note.id === noteid)
-    if(userid){
-        userid.note.splice(noteindex,1)
-    }
-    response.status(200).json(userid,userid.note)
+    const noteId = Number(request.params.noteId)
+    const userId = users.find(user=> user.id === id)
+    const noteIndex = Number(userId.note.findIndex(note=>note.id === noteId))
+    
+        userId.note.splice(noteIndex,1)
+    
+    console.log(userId.note)
+    response.status(200).json("Recado excluido com sucesso")
 })
 
 app.get('/', (request, response) => {
